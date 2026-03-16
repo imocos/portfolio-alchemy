@@ -1,6 +1,10 @@
 const startButton = document.getElementById("startButton");
+const loadChallengeButton = document.getElementById("loadChallengeButton");
+
+let token = ""; // store the session token
 
 startButton.addEventListener("click", startSession);
+loadChallengeButton.addEventListener("click", loadChallenge);
 
 async function startSession() {
     const email = document.getElementById("email").value;
@@ -14,20 +18,43 @@ async function startSession() {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({email, nick, pin})
+            body: JSON.stringify({ email, nick, pin })
         });
 
         const data = await response.json();
+        console.log(data);
 
-        console.log(data); // Shows the full response in the browser console
-
-        // Show the token or error in the page
-        document.getElementById("result").textContent =
-            data.token ? "Token received: " + data.token
-                       : "Error: " + (data.error || "unknown");
+        if (data.token) {
+            token = data.token;
+            document.getElementById("result").textContent = "Token received: " + token;
+        } else {
+            document.getElementById("result").textContent = "Error: " + (data.error || "unknown");
+        }
     } catch (err) {
         console.error(err);
         document.getElementById("result").textContent = "Fetch error!";
     }
- }
- 
+}
+
+async function loadChallenge() {
+    if (!token) {
+        alert("You need to start a session first!");
+        return;
+    }
+
+    try {
+        const response = await fetch("https://alchemy-kd0l.onrender.com/status", {
+            headers: {
+                "Authorization": token
+            }
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        document.getElementById("challengePrompt").textContent = data.prompt;
+    } catch (err) {
+        console.error(err);
+        document.getElementById("challengePrompt").textContent = "Failed to load challenge.";
+    }
+}
