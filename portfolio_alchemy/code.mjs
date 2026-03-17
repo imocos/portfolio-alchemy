@@ -1,11 +1,13 @@
 const startButton = document.getElementById("startButton");
 const loadChallengeButton = document.getElementById("loadChallengeButton");
+const clueButton = document.getElementById("clueButton");
 const submitAnswerButton = document.getElementById("submitAnswerButton");
 
 let token = ""; 
 
 startButton.addEventListener("click", startSession);
 loadChallengeButton.addEventListener("click", loadChallenge);
+clueButton.addEventListener("click", getClue);
 submitAnswerButton.addEventListener("click", submitAnswer);
 
 async function startSession() {
