@@ -1,10 +1,12 @@
 const startButton = document.getElementById("startButton");
 const loadChallengeButton = document.getElementById("loadChallengeButton");
+const submitAnswerButton = document.getElementById("submitAnswerButton");
 
-let token = ""; // store the session token
+let token = ""; 
 
 startButton.addEventListener("click", startSession);
 loadChallengeButton.addEventListener("click", loadChallenge);
+submitAnswerButton.addEventListener("click", submitAnswer);
 
 async function startSession() {
     const email = document.getElementById("email").value;
@@ -27,6 +29,7 @@ async function startSession() {
         if (data.token) {
             token = data.token;
             document.getElementById("result").textContent = "Token received: " + token;
+            loadChallenge();
         } else {
             document.getElementById("result").textContent = "Error: " + (data.error || "unknown");
         }
@@ -56,5 +59,43 @@ async function loadChallenge() {
     } catch (err) {
         console.error(err);
         document.getElementById("challengePrompt").textContent = "Failed to load challenge.";
+    }
+}
+
+
+async function submitAnswer() {
+    const answer = document.getElementById("answerInput").value;
+
+    if (!token) {
+        alert("Start a session first!");
+        return;
+    }
+
+    try {
+        const response = await fetch("https://alchemy-kd0l.onrender.com/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": token
+            },
+            body: JSON.stringify({ answer })
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data.correct) {
+            document.getElementById("submitResult").textContent =
+                "Correct! Points: " + data.awarded;
+            loadChallenge();
+        } else {
+            document.getElementById("submitResult").textContent =
+                "Wrong answer. Try again!";
+        }
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("submitResult").textContent = "Submit failed.";
     }
 }
