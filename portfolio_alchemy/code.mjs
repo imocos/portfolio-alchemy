@@ -62,6 +62,8 @@ async function loadChallenge() {
         console.error(err);
         document.getElementById("challengePrompt").textContent = "Failed to load challenge.";
     }
+
+    document.getElementById("clueText").textContent = "";
 }
 
 async function getClue() {
@@ -71,7 +73,7 @@ async function getClue() {
     } 
 
     try {
-        const response = await fetch("https://alchemy-kd0l.onrender.com/submit", {
+        const response = await fetch("https://alchemy-kd0l.onrender.com/clue", {
             headers: {
                 "Authorization": token
             }
@@ -123,4 +125,6 @@ async function submitAnswer() {
         console.error(err);
         document.getElementById("submitResult").textContent = "Submit failed.";
     }
+
+    document.getElementById("answerInput").value = "";
 }
