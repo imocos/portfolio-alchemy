@@ -84,7 +84,7 @@ async function getClue() {
 
         document.getElementById("clueText").textContent = data.clue;
     } catch (err) {
-        console.log(err);
+        console.error(err);
         document.getElementById("clueText").textContent = "Failed to get clue.";
     }
 }
