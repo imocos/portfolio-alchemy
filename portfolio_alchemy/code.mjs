@@ -64,6 +64,29 @@ async function loadChallenge() {
     }
 }
 
+async function getClue() {
+    if (!token) {
+        alert("Start a session first!");
+        return;
+    } 
+
+    try {
+        const response = await fetch("https://alchemy-kd0l.onrender.com/submit", {
+            headers: {
+                "Authorization": token
+            }
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        document.getElementById("clueText").textContent = data.clue;
+    } catch (err) {
+        console.log(err);
+        document.getElementById("clueText").textContent = "Failed to get clue.";
+    }
+}
+
 
 async function submitAnswer() {
     const answer = document.getElementById("answerInput").value;
